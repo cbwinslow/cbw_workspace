@@ -1,0 +1,38 @@
+name: CI — Next.js app
+
+on:
+  push:
+    paths:
+      - 'boilerplate/nextjs-app/**'
+  pull_request:
+    paths:
+      - 'boilerplate/nextjs-app/**'
+
+jobs:
+  build:
+    name: Build Next.js app
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        working-directory: boilerplate/nextjs-app
+        run: npm install --no-audit --prefer-offline
+
+      - name: Build
+        working-directory: boilerplate/nextjs-app
+        run: npm run build
+
+      - name: Upload build output (artifact)
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nextjs-build
+          path: boilerplate/nextjs-app/.next

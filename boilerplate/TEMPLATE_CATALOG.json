@@ -1,0 +1,40 @@
+{
+  "version": "1.0",
+  "generated": "2025-08-29T00:00:00Z",
+  "categories": {
+    "dotfiles": [
+      {
+        "id": "gitconfig",
+        "path": "boilerplate/dotfiles/.gitconfig.example",
+        "description": "Example git config"
+      },
+      {
+        "id": "zshrc",
+        "path": "boilerplate/dotfiles/.zshrc.example",
+        "description": "Example zshrc with safe defaults"
+      }
+    ],
+    "scripts": [
+      {
+        "id": "setup-dotfiles",
+        "path": "boilerplate/scripts/setup.sh",
+        "description": "Interactive installer for example dotfiles (will prompt before overwrite)."
+      }
+      ,
+      {
+        "id": "install-bazelisk",
+        "path": "boilerplate/tools/install_bazelisk.sh",
+        "description": "Installer script to download and install Bazelisk (Bazel launcher) into the repo or a user bin dir."
+      }
+    ],
+    "templates": [
+      {
+        "id": "sample-project",
+        "path": "boilerplate/templates/sample-project",
+        "description": "Tiny example starter showing how templates should be structured."
+      }
+    ],
+    "configs": [],
+    "gists": []
+  }
+}

@@ -1,0 +1,68 @@
+const stages = [
+  {
+    id: 'ideation',
+    title: 'Ideation',
+    brief: 'High-level ideas, problem definition, goals',
+    description: 'Capture ideas, align stakeholders, create initial success metrics and hypotheses.',
+    actions: ['Write problem statement', 'Define success metrics', 'Create initial backlog'],
+    crews: ['product-dev']
+  },
+  {
+    id: 'requirements',
+    title: 'Requirements & Roadmap',
+    brief: 'Define scope, prioritize, plan roadmap',
+    description: 'Turn ideas into requirements, wireframes, and a prioritized roadmap.',
+    actions: ['Write user stories', 'Prioritize backlog', 'Estimate effort'],
+    crews: ['product-dev']
+  },
+  {
+    id: 'design',
+    title: 'Design & Architecture',
+    brief: 'Technical designs, architecture decisions',
+    description: 'Choose architecture, design APIs, and evaluate tradeoffs.',
+    actions: ['Design system architecture', 'Select tech stack', 'Create API contracts'],
+    crews: ['tech-expert']
+  },
+  {
+    id: 'implementation',
+    title: 'Implementation / Development',
+    brief: 'Coding, code review, incremental delivery',
+    description: 'Implement features, write tests, perform code reviews and iterate.',
+    actions: ['Open PRs', 'Run CI', 'Respond to review feedback'],
+    crews: ['code-review', 'product-dev']
+  },
+  {
+    id: 'ci',
+    title: 'CI / Automated Tests',
+    brief: 'Builds, unit/integration tests, linting',
+    description: 'Automate quality checks and ensure reproducible builds.',
+    actions: ['Run unit tests', 'Run integration tests', 'Enforce lint rules'],
+    crews: ['code-review']
+  },
+  {
+    id: 'staging',
+    title: 'Staging / QA',
+    brief: 'Manual and automated acceptance tests before release',
+    description: 'Validate feature behavior on staging environment.',
+    actions: ['Run acceptance tests', 'Conduct UAT', 'Prepare release notes'],
+    crews: ['product-dev', 'tech-expert']
+  },
+  {
+    id: 'release',
+    title: 'Release',
+    brief: 'Canary, gradual, or full release',
+    description: 'Release to production with rollback and monitoring strategies.',
+    actions: ['Choose rollout strategy', 'Monitor canary', 'Trigger full rollout'],
+    crews: ['tech-expert']
+  },
+  {
+    id: 'production',
+    title: 'Production Operations',
+    brief: 'Monitoring, observability, incident response',
+    description: 'Operate and track metrics, handle incidents and continuous improvements.',
+    actions: ['Monitor SLOs', 'Runpostmortems', 'Iterate on metrics'],
+    crews: ['tech-expert']
+  }
+]
+
+export default stages

@@ -1671,3 +1671,36 @@ Which do you want me to prepare?
 
 ---
 
+_**User**_
+
+next
+
+---
+
+_**Assistant**_
+
+GitHub Copilot
+
+Your `COMMIT_EDITMSG` file has an incomplete commit message ("feat: etgte r"). Fix it to something descriptive, then push the branch.
+
+1) Edit the commit message (replace with a proper one):
+   ```bash
+   git commit --amend -m "feat: finalize master-template (nextjs app, tools, CI, docs)"
+   ```
+
+2) Push the branch (assuming it's `master-template/finalize`):
+   ```bash
+   git push -u origin master-template/finalize
+   ```
+
+3) Create a PR (use gh CLI if installed):
+   ```bash
+   gh pr create --web --base main --head master-template/finalize --title "feat: finalize master-template" --body "Finalize master-template: nextjs app, tools, CI, docs"
+   ```
+
+Security reminder: Remove the API key from `blackbox_mcp_settings.json` before pushing (edit the file and commit the change).
+
+If you need help with the PR body or scrubbing the secret, say "help with PR" or "scrub secret".
+
+---
+

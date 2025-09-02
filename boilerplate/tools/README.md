@@ -1,3 +1,54 @@
+# Boilerplate tools
+
+This folder contains small helper scripts used by the boilerplate repository.
+
+install_bazelisk.sh
+- Installs a repo-local `bazel` wrapper (Bazelisk) into a destination directory (default: `.local/bin`).
+- Usage examples:
+
+```bash
+# dry-run
+bash boilerplate/tools/install_bazelisk.sh --dry-run
+
+# install using checksum from versions.lock
+bash boilerplate/tools/install_bazelisk.sh --require-checksum --dest ./.local/bin
+```
+
+versions.lock
+- Format: `tool@version=sha256`
+- Populate with the sha256 of the release binary used by the installer. CI is recommended to run the installer with `--require-checksum`.
+# Boilerplate tools
+
+This directory contains helper scripts used by the boilerplate repository.
+
+Included:
+- `install_bazelisk.sh` - installs a repo-local `bazel` launcher (Bazelisk). Supports checksum verification.
+- `versions.lock` - pins tool versions and sha256 checksums. Format: `tool@version=sha256`.
+
+Quick use:
+
+Dry-run:
+```bash
+bash install_bazelisk.sh --dry-run
+```
+
+Install with checksum lookup from `versions.lock`:
+```bash
+bash install_bazelisk.sh --require-checksum --dest $(pwd)/.local/bin
+```
+
+To update the checksum for a tool, download the exact release asset and compute sha256:
+```bash
+curl -fsSL -o /tmp/binary <URL>
+sha256sum /tmp/binary | awk '{print $1}'
+```
+Then edit `versions.lock` and replace the placeholder or add an entry like:
+```
+bazelisk@1.20.0=<sha256>
+```
+
+CI:
+The repository includes a GitHub Actions workflow (`.github/workflows/verify-tools.yml`) which verifies `versions.lock` and runs the installer with `--require-checksum` on push/PR to `boilerplate/tools`.
 # Tools and runtime helpers
 
 This directory holds small, safe installers and helper scripts for third-party developer tools we want to treat as part of the master template.

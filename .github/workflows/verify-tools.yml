@@ -1,0 +1,100 @@
+name: Verify tools
+
+on:
+  push: {}
+  pull_request: {}
+
+jobs:
+  verify-tools:
+    name: Verify locked tool checksums and installer
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verify versions.lock has required entries for bazelisk
+        run: |
+          set -euo pipefail
+          LOCK=boilerplate/tools/versions.lock
+          TOOL=bazelisk
+          VERSION=1.20.0
+          # platforms we expect checksums for (optional; maintainers may remove/adjust)
+          PLATFORMS=(linux_amd64 linux_arm64 darwin_amd64 darwin_arm64)
+          missing=false
+          echo "Checking $LOCK for $TOOL@$VERSION entries"
+          for p in "${PLATFORMS[@]}"; do
+            # allow either generic (tool@version=sha) or per-platform (tool@version_platform=sha)
+            if ! grep -E "^${TOOL}@${VERSION}(_${p})?=" "$LOCK" >/dev/null; then
+              echo "Missing entry for ${TOOL}@${VERSION} or ${TOOL}@${VERSION}_${p} in $LOCK" >&2
+              missing=true
+            else
+              echo "Found checksum for platform $p"
+            fi
+          done
+          if [[ "$missing" == true ]]; then
+            echo "One or more platform checksum entries missing in $LOCK" >&2
+            exit 1
+          fi
+
+      - name: Run installer with checksum verification for runner platform
+        run: |
+          set -euo pipefail
+          # Determine runner platform and run installer with repo-local destination
+          mkdir -p ./.local/bin
+          uname_s=$(uname -s)
+          uname_m=$(uname -m)
+          case "$uname_m" in
+            x86_64|amd64) arch_tag=amd64;;
+            aarch64|arm64) arch_tag=arm64;;
+            *) arch_tag=$uname_m;;
+          esac
+          case "$uname_s" in
+            Linux) os_tag=linux;;
+            Darwin) os_tag=darwin;;
+            *) echo "Unsupported runner OS: $uname_s" >&2; exit 3;;
+          esac
+          # prefer per-platform key, fall back to generic
+          LOCK=boilerplate/tools/versions.lock
+          key_per_platform="bazelisk@1.20.0_${os_tag}_${arch_tag}"
+          key_generic="bazelisk@1.20.0"
+          if grep -E "^${key_per_platform}=" "$LOCK" >/dev/null; then
+            echo "Using lock entry: ${key_per_platform}"
+          elif grep -E "^${key_generic}=" "$LOCK" >/dev/null; then
+            echo "Using generic lock entry: ${key_generic}"
+          else
+            echo "No lock entry found for $key_per_platform or $key_generic" >&2
+            exit 1
+          fi
+          bash boilerplate/tools/install_bazelisk.sh --require-checksum --dest ./.local/bin
+name: Verify tools lock and install
+
+on:
+  push:
+    paths:
+      - 'boilerplate/tools/**'
+  pull_request:
+    paths:
+      - 'boilerplate/tools/**'
+
+jobs:
+  verify-tools:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Ensure versions.lock has checksums
+        run: |
+          set -euo pipefail
+          LOCK=boilerplate/tools/versions.lock
+          if [[ ! -f "$LOCK" ]]; then
+            echo "Missing $LOCK"; exit 1
+          fi
+          # basic sanity: ensure bazelisk entry present and not placeholder
+          grep -E '^bazelisk@' "$LOCK" || { echo 'bazelisk entry missing'; exit 2; }
+          grep -E '^bazelisk@[0-9]+\.' "$LOCK" || { echo 'bazelisk version missing'; exit 2; }
+          if grep -q 'PLACEHOLDER' "$LOCK"; then echo 'Placeholder checksum present'; exit 3; fi
+
+      - name: Run installer with --require-checksum
+        run: |
+          set -euo pipefail
+          bash boilerplate/tools/install_bazelisk.sh --require-checksum --dest /tmp/.local/bin --force

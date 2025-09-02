@@ -1,0 +1,4 @@
+# versions.lock for boilerplate tools
+# Format: <tool>@<version>=<sha256>
+# Example entry for bazelisk v1.20.0 (checksum for linux/amd64 release)
+bazelisk@1.20.0=d9af1fa808c0529753c3befda75123236a711d971d3485a390507122148773a3
